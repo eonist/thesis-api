@@ -27,7 +27,7 @@ class TimeFrame(models.Model):
 
     session = models.ForeignKey(Session, on_delete=models.CASCADE, related_name='time_frames', )
     sensor_data = ArrayField(models.FloatField(), size=8, )
-    label = ArrayField(models.FloatField(), size=2, )
+    label = ArrayField(models.FloatField(), size=3, )
     timestamp = models.FloatField()
 
     class Meta:
