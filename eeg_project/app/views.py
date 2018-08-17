@@ -58,6 +58,13 @@ class TimeFrameList(generics.ListCreateAPIView):
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
+    def get_queryset(self):
+        queryset = TimeFrame.objects.all()
+        session_id = self.request.query_params.get('session', None)
+        if session_id is not None:
+            queryset = queryset.filter(session=session_id)
+        return queryset
+
 
 class TimeFrameDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = TimeFrame.objects.all()
