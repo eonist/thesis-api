@@ -16,7 +16,7 @@ class Person(models.Model):
 
 class Session(models.Model):
     created = models.DateTimeField(auto_now_add=True, )
-    person = models.OneToOneField(Person, on_delete=models.CASCADE, )
+    person = models.ForeignKey(Person, on_delete=models.CASCADE, related_name='sessions', )
 
     class Meta:
         ordering = ('created',)
