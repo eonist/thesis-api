@@ -14,10 +14,13 @@ class PersonList(generics.ListCreateAPIView):
             Person.objects.get_or_create(name=request.data["name"], age=request.data["age"],
                                          gender=request.data["gender"])
 
+        serializer = PersonSerializer(person)
+        headers = self.get_success_headers(serializer.data)
+
         if created:
-            return Response(request.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
         else:
-            return Response(request.data, status=status.HTTP_200_OK)
+            return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
 
 
 class PersonDetail(generics.RetrieveUpdateDestroyAPIView):
