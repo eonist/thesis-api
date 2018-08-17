@@ -9,6 +9,16 @@ class PersonList(generics.ListCreateAPIView):
     queryset = Person.objects.all()
     serializer_class = PersonSerializer
 
+    def post(self, request, *args, **kwargs):
+        person, created = \
+            Person.objects.get_or_create(name=request.data["name"], age=request.data["age"],
+                                         gender=request.data["gender"])
+
+        if created:
+            return Response(request.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(request.data, status=status.HTTP_200_OK)
+
 
 class PersonDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Person.objects.all()
@@ -18,6 +28,13 @@ class PersonDetail(generics.RetrieveUpdateDestroyAPIView):
 class SessionList(generics.ListCreateAPIView):
     queryset = Session.objects.all()
     serializer_class = SessionSerializer
+
+    def get_queryset(self):
+        queryset = Session.objects.all()
+        person_id = self.request.query_params.get('person', None)
+        if person_id is not None:
+            queryset = queryset.filter(person=person_id)
+        return queryset
 
 
 class SessionDetail(generics.RetrieveUpdateDestroyAPIView):
