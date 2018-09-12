@@ -30,7 +30,7 @@ class Session(models.Model):
     created = models.DateTimeField(auto_now_add=True, )
     person = models.ForeignKey(Person, on_delete=models.CASCADE, related_name='sessions', )
     ch_names = ArrayField(models.CharField(max_length=5), size=8, blank=False)
-    real_data = models.BooleanField(default=False)
+    is_real_data = models.BooleanField(default=False)
 
     @property
     def timeframe_count(self):

@@ -35,9 +35,15 @@ class SessionList(generics.ListCreateAPIView):
 
     def get_queryset(self):
         queryset = Session.objects.all()
+
         person_id = self.request.query_params.get('person', None)
         if person_id is not None:
             queryset = queryset.filter(person=person_id)
+
+        is_real_data = self.request.query_params.get('real', None)
+        if is_real_data is not None:
+            queryset = queryset.filter(is_real_data=is_real_data)
+
         return queryset
 
 
