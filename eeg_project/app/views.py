@@ -1,8 +1,9 @@
 from rest_framework import generics, status
 from rest_framework.response import Response
 
-from eeg_project.app.models import Person, Session, TimeFrame
-from eeg_project.app.serializers import PersonSerializer, SessionSerializer, TimeFrameSerializer
+from eeg_project.app.models import Person, Session, TimeFrame, Label
+from eeg_project.app.serializers import PersonSerializer, SessionSerializer, TimeFrameSerializer, LabelSerializer
+from eeg_project.app.utils.utils import is_number
 
 
 class PersonList(generics.ListCreateAPIView):
@@ -50,9 +51,16 @@ class TimeFrameList(generics.ListCreateAPIView):
     serializer_class = TimeFrameSerializer
 
     def create(self, request, pk=None, company_pk=None, project_pk=None):
-        is_many = True if isinstance(request.data, list) else False
+        if not isinstance(request.data, list):
+            raise Exception("TimeFrameList Create expected a list as request data")
 
-        serializer = self.get_serializer(data=request.data, many=is_many)
+        for i in range(len(request.data)):
+            if not is_number(request.data[i]["label"]):
+                label, created = Label.objects.get_or_create(name=request.data[i]["label"])
+
+                request.data[i]["label"] = label.id
+
+        serializer = self.get_serializer(data=request.data, many=True)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
@@ -69,3 +77,25 @@ class TimeFrameList(generics.ListCreateAPIView):
 class TimeFrameDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = TimeFrame.objects.all()
     serializer_class = TimeFrameSerializer
+
+
+class LabelList(generics.ListCreateAPIView):
+    queryset = Label.objects.all()
+    serializer_class = LabelSerializer
+
+    def post(self, request, *args, **kwargs):
+        label, created = \
+            Label.objects.get_or_create(name=request.data["name"])
+
+        serializer = LabelSerializer(label)
+        headers = self.get_success_headers(serializer.data)
+
+        if created:
+            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        else:
+            return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
+
+
+class LabelDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Label.objects.all()
+    serializer_class = LabelSerializer

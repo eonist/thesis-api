@@ -74,16 +74,11 @@ WSGI_APPLICATION = 'eeg_project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'eeg_data_postgres',
-        'USER': 'olav',
-        'PASSWORD': '',
-        'HOST': 'localhost',
-        'POST': '5432'
-    },
-    'original': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'HOST': 'db',
+        'PORT': 5432,
     }
 }
 
