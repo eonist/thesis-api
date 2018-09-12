@@ -1,4 +1,6 @@
 .idea
+*ipynb*
+.DS_Store
+*__pycache__*
 *.pyc
 venv/*
-*__pycache__*
