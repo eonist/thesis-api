@@ -3,6 +3,7 @@ from rest_framework.response import Response
 
 from eeg_project.app.models import Person, Session, TimeFrame, Label
 from eeg_project.app.serializers import PersonSerializer, SessionSerializer, TimeFrameSerializer, LabelSerializer
+from eeg_project.app.utils.config import LABEL_MAP
 from eeg_project.app.utils.utils import is_number
 
 
@@ -63,8 +64,7 @@ class TimeFrameList(generics.ListCreateAPIView):
         for i in range(len(request.data)):
             if not is_number(request.data[i]["label"]):
                 label, created = Label.objects.get_or_create(name=request.data[i]["label"])
-
-                request.data[i]["label"] = label.id
+                request.data[i]["label_id"] = label.id
 
         serializer = self.get_serializer(data=request.data, many=True)
         serializer.is_valid(raise_exception=True)
@@ -90,8 +90,15 @@ class LabelList(generics.ListCreateAPIView):
     serializer_class = LabelSerializer
 
     def post(self, request, *args, **kwargs):
-        label, created = \
-            Label.objects.get_or_create(name=request.data["name"])
+        name = request.data["name"]
+        if name in LABEL_MAP:
+            value = LABEL_MAP[name]
+            label, created = Label.objects.get_or_create(name=name, value=value)
+        else:
+            label, created = Label.objects.get_or_create(name=name)
+
+        if "value" in request.data:
+            label.value = request.data["value"]
 
         serializer = LabelSerializer(label)
         headers = self.get_success_headers(serializer.data)

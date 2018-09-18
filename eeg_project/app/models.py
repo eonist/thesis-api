@@ -8,7 +8,7 @@ class Person(models.Model):
     created = models.DateTimeField(auto_now_add=True, )
     name = models.CharField(max_length=100, blank=False)
     gender = models.CharField(choices=GENDER_CHOICES, max_length=100, blank=False)
-    age = models.IntegerField(blank=False)
+    age = models.IntegerField()
 
     class Meta:
         ordering = ('created',)
@@ -18,6 +18,7 @@ class Label(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     name = models.CharField(max_length=100, blank=False)
+    value = models.IntegerField(default=99)
 
     def __str__(self):
         return self.name
