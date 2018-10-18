@@ -9,6 +9,7 @@ class Person(models.Model):
     name = models.CharField(max_length=100, blank=False)
     gender = models.CharField(choices=GENDER_CHOICES, max_length=100, blank=False)
     age = models.IntegerField()
+    right_handed = models.BooleanField(default=True)
 
     class Meta:
         ordering = ('created',)

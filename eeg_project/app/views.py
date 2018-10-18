@@ -13,8 +13,7 @@ class PersonList(generics.ListCreateAPIView):
 
     def post(self, request, *args, **kwargs):
         person, created = \
-            Person.objects.get_or_create(name=request.data["name"], age=request.data["age"],
-                                         gender=request.data["gender"])
+            Person.objects.get_or_create(**request.data)
 
         serializer = PersonSerializer(person)
         headers = self.get_success_headers(serializer.data)
