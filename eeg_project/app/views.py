@@ -12,6 +12,7 @@ class PersonList(generics.ListCreateAPIView):
     serializer_class = PersonSerializer
 
     def post(self, request, *args, **kwargs):
+        
         person, created = \
             Person.objects.get_or_create(**request.data)
 
